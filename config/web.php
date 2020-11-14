@@ -17,32 +17,68 @@ $config = [
             'parsers' => [
             'application/json' => 'yii\web\JsonParser',
             ]
-            ],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
+            ],
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => false,
             'enableSession' => false,
         ],
-            'urlManager' => [
-                'enablePrettyUrl' => true,
-                'enableStrictParsing' => true,
-                'showScriptName' => false,
-                'rules' => [
-                   
-                '' => 'site/index',
-                'login' => 'site/login',
-                'logout' => 'site/logout',
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => 'user',
-                    'except' => ['delete'],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
+            'showScriptName' => false,
+            'rules' => 
+            [
+            '' => 'site/index',
+            'login' => 'site/login',
+            'logout' => 'site/logout',
+            [
+                'class' => 'yii\rest\UrlRule',
+                'controller' => 'user',
+                'except' => ['delete'],
                 ],
+            [
+                'class' => 'yii\rest\UrlRule',
+                'controller' => 'student',
+                'except' => ['delete'],
+                ],
+            [
+                'class' => 'yii\rest\UrlRule',
+                'controller' => 'teacher',
+                'except' => ['delete'],
+                ],
+            [
+                'class' => 'yii\rest\UrlRule',
+                'controller' => 'gender',
+                'except' => ['delete'],
+                ],
+            [
+                'class' => 'yii\rest\UrlRule',
+                'controller' => 'day',
+                'except' => ['delete'],
+                ],
+            [
+                'class' => 'yii\rest\UrlRule',
+                'controller' => 'otdel',
+                'except' => ['delete'],
+                ],
+            [
+                'class' => 'yii\rest\UrlRule',
+                'controller' => 'special',
+                'except' => ['delete'],
+                ],
+            [
+                'class' => 'yii\rest\UrlRule',
+                'controller' => 'classroom',
+                'except' => ['delete'],
+                ], 
+                          
             ],
         ],
         'errorHandler' => [

@@ -17,6 +17,11 @@ use Yii;
 class Student extends \yii\db\ActiveRecord
 {
     /**
+     * @var mixed|null
+     */
+    private $student;
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -78,5 +83,41 @@ class Student extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \app\models\queries\StudentQuery(get_called_class());
+    }
+
+    public function loadAndSave($bodyParams)
+    {
+        $user = ($this->isNewRecord) ? new User() : User::findOne($this->user_id);
+        if ($user->load($bodyParams, '') && $user->save()) {
+            if ($this->isNewRecord) {
+                $this->user_id = $user->user_id;
+            }
+            if ($this->load($bodyParams, '') && $this->save()) {
+                return true;
+            }
+}
+
+        return false;
+
+    }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        return array_merge($fields,
+            [
+            'lastname' => function () { return $this->user->lastname;},
+            'firstname' => function () { return $this->user->firstname;},
+            'patronymic' => function () { return $this->user->patronymic;},
+            'login' => function () { return $this->user->login;},
+            'gender_id' => function () { return $this->user->gender_id;},
+            'genderName' => function () { return $this->user->gender->name;},
+            'birthday' => function () { return $this->user->birthday;},
+            'roleName' => function () { return $this->user->roleName;},
+            'active' => function () { return $this->user->active;},
+            'gruppa_id' => function () { return $this->student->gruppa_id;},
+            'gruppaName' => function () { return $this->student->gruppa->name;},
+            'num_zach' => function () { return $this->student->num_zach;}
+        ]);
     }
 }

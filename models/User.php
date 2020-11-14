@@ -88,9 +88,11 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 
     public function logout() {
 
+//        $this->token = null;
+//        $this->expired_at = null;
+//        return $this->save();
         $this->token = null;
         $this->expired_at = null;
-        
         return $this->save(false);
 
     }
@@ -118,18 +120,14 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['lastname', 'firstname', 'gender_id', 'role'],
-            'required'],
-            [['gender_id', 'active', 'expired_at'],
-            'integer'],
+            [['lastname', 'firstname', 'gender_id', 'role'], 'required'],
+            [['gender_id', 'active', 'expired_at'], 'integer'],
             ['birthday', 'date', 'format' => 'yyyy-MM-dd'],
-            [['lastname', 'firstname', 'patronymic',
-            'login'], 'string', 'max' => 50],
+            [['lastname', 'firstname', 'patronymic', 'login'], 'string', 'max' => 50],
             [['pass', 'token'], 'string', 'max' => 255],
-            ['login', 'unique', 'message' => 'login
-            invalid'],
-            
-            ];
+            ['login', 'unique', 'message' => 'login invalid'],
+
+        ];
     }
 
     /**
@@ -198,42 +196,50 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return new \app\models\queries\UserQuery(get_called_class());
     }
+
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
         $auth = Yii::$app->authManager;
         $roles = $auth->getRoles();
-        if (array_key_exists($this->role, $roles)) {
-        $role = $auth->getRole($this->role);
-        $auth->revokeAll($this->user_id);
-        $auth->assign($role, $this->user_id);
-        }   
+        if (array_key_exists($this->role, $roles))
+        {
+            $role = $auth->getRole($this->role);
+            $auth->revokeAll($this->user_id);
+            $auth->assign($role, $this->user_id);
+        }
     }
+
     public function fields()
     {
         $fields = parent::fields();
         unset($fields['pass'], $fields['token'],
-        $fields['expired_at']);
-        return array_merge($fields, [
-        'genderName' => function () { return $this->gender->name;},
-        'roleName' => function () { return $this->roleName; },
-        ]); 
+            $fields['expired_at']);
+        return array_merge($fields, [ 'genderName' => function () { return $this->gender->name;}, 'roleName' => function () { return $this->roleName; },
+        ]);
     }
-    public function getRoleName() {
-        $roles = Yii::$app->authManager->getRolesByUser($this->user_id);
-$roleName = array_key_first($roles);
 
-return $roles[$roleName]->description;
+    public function getRoleName()
+    {
+        $roles = Yii::$app->authManager->getRolesByUser($this->user_id);
+        $roleName = array_key_first($roles);
+
+        return $roles[$roleName]->description;
     }
-    public function afterValidate() {
-        if ($this->pass) {
+
+    public function afterValidate()
+    {
+        if ($this->pass)
+        {
             $this->setHashPassword($this->pass);
-            }
-            
-            return true;  
+        }
+        return true;
     }
-    public function setHashPassword($password) {
+
+    public function setHashPassword($password)
+    {
         $this->pass = Yii::$app->getSecurity()->generatePasswordHash($password);
     }
-    
+
+
 }

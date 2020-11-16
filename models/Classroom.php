@@ -5,13 +5,15 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "classroom".
+ * This is the model class for table "special".
  *
  * @property int $classroom_id
  * @property string $name
+ * @property int $classroom_id
  * @property int $active
  *
- * @property Schedule[] $schedules
+ * @property Gruppa[] $gruppas
+ * @property Otdel $classroom
  */
 class Classroom extends \yii\db\ActiveRecord
 {
@@ -29,9 +31,9 @@ class Classroom extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
-            [['active'], 'integer'],
-            [['name'], 'string', 'max' => 20],
+            [['classroom_id'], 'required'],
+            [['classroom_id', 'active'], 'integer'],
+            [['name'], 'string', 'max' => 250],
             [['classroom_id'], 'unique', 'targetClass' => Classroom::className(), 'message' => 'Класс успешно добавлен'],
         ];
     }
@@ -48,38 +50,34 @@ class Classroom extends \yii\db\ActiveRecord
         ];
     }
 
+    
     /**
-     * Gets query for [[Schedules]].
+     * Gets query for [[Gruppas]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery|\app\models\queries\GruppaQuery
      */
-  
+    public function getGruppas()
+    {
+        return $this->hasMany(Gruppa::className(), ['classroom_id' => 'classroom_id']);
+    }
 
     /**
      * Gets query for [[Otdel]].
      *
      * @return \yii\db\ActiveQuery|\app\models\queries\OtdelQuery
      */
-    public function getSchedule()
+    public function getOtdel()
     {
-        return $this->hasOne(Schedule::className(), ['classroom_id' => 'classroom_id']);
+        return $this->hasOne(Otdel::className(), ['classroom_id' => 'classroom_id']);
     }
-    
 
-    public function loadAndSave($bodyParams)
+    /**
+     * {@inheritdoc}
+     * @return \app\models\queries\UserQuery the active query used by this AR class.
+     */
+    public static function find()
     {
-        $classroom = ($this->isNewRecord) ? new Classroom() : Classroom::findOne($this->classroom_id);
-        if ($classroom->load($bodyParams, '') && $classroom->save()) {
-            if ($this->isNewRecord) {
-                $this->classroom_id = $classroom->classroom_id;
-            }
-            if ($this->load($bodyParams, '') && $this->save()) {
-                return true;
-            }
-}
-
-        return false;
-
+        return new \app\models\queries\UserQuery(get_called_class());
     }
     public function fields()
     {
@@ -90,8 +88,19 @@ class Classroom extends \yii\db\ActiveRecord
             'active' => function () { return $this->active;},
         ]);
     }
-    public static function find()
+
+    public function loadAndSave($bodyParams)
     {
-        return new \app\models\queries\UserQuery(get_called_class());
+        $classroom = ($this->isNewRecord) ? new Special() :
+        Classroom::findOne($this->classroom_id);
+        if ($classroom->load($bodyParams, '') && $classroom->save()) {
+            if ($this->isNewRecord) {
+                $this->classroom_id = $classroom->classroom_id;
+            }
+            if ($this->load($bodyParams, '') && $this->save()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

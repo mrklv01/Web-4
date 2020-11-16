@@ -19,7 +19,7 @@ $config = [
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
-        ],
+            ],
         'log' => [
             'targets' => [
                 [

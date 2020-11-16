@@ -29,11 +29,12 @@ class LessonNum extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'time_lesson'], 'required'],
+            [['time_lesson'], 'required'],
             [['time_lesson'], 'safe'],
             [['name'], 'string', 'max' => 10],
         ];
     }
+
 
     /**
      * {@inheritdoc}
@@ -50,7 +51,7 @@ class LessonNum extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Schedules]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery|\app\models\queries\ScheduleQuery
      */
     public function getSchedules()
     {
@@ -61,7 +62,6 @@ class LessonNum extends \yii\db\ActiveRecord
         $fields = parent::fields();
         return array_merge($fields, [
             'lesson_num_id' => function () { return $this->lesson_num_id;},
-            'name' => function () { return $this->name;},
             'time_lesson' => function () { return $this->time_lesson;},
         ]);
     }

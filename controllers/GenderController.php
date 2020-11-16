@@ -17,7 +17,7 @@ class GenderController extends BaseController
         return new ActiveDataProvider(['query' => Gender::find()]);
     }
 
-    public function actionCreate()
+    /*public function actionCreate()
     {
         $gender = new Gender();
         return $this->saveModel($gender);
@@ -27,14 +27,14 @@ class GenderController extends BaseController
     {
         $gender = $this->findModel($id);
         return $this->saveModel($gender);
-    }
+    }*/
 
     public function actionView($id)
     {
         return $this->findModel($id);
     }
 
-    public function saveModel($gender)
+    /*public function saveModel($gender)
     {
         if ($gender->loadAndSave(Yii::$app->getRequest()->getBodyParams())) {
             $response = Yii::$app->getResponse();
@@ -47,7 +47,7 @@ class GenderController extends BaseController
             ServerErrorHttpException(serialize($gender->getErrors()));
         }  
         return $gender;
-    }
+    }*/
     public function findModel($id)
     {
         $gender = Gender::findOne($id);

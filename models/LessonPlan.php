@@ -8,13 +8,13 @@ use Yii;
  * This is the model class for table "lesson_plan".
  *
  * @property int $lesson_plan_id
- * @property int $gruppa_id
+ * @property int $lessonplan_id
  * @property int $subject_id
  * @property int $user_id
  *
  * @property Subject $subject
- * @property Gruppa $gruppa
  * @property Teacher $user
+ * @property Gruppa $lessonplan
  * @property Schedule[] $schedules
  */
 class LessonPlan extends \yii\db\ActiveRecord
@@ -36,8 +36,9 @@ class LessonPlan extends \yii\db\ActiveRecord
             [['gruppa_id', 'subject_id', 'user_id'], 'required'],
             [['gruppa_id', 'subject_id', 'user_id'], 'integer'],
             [['subject_id'], 'exist', 'skipOnError' => true, 'targetClass' => Subject::className(), 'targetAttribute' => ['subject_id' => 'subject_id']],
-            [['gruppa_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gruppa::className(), 'targetAttribute' => ['gruppa_id' => 'gruppa_id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Teacher::className(), 'targetAttribute' => ['user_id' => 'user_id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'user_id']],
+            [['gruppa_id', 'user_id'], 'filter', 'targetClass' => LessonPlan::className(),'targetAttribute' => ['lesson_plan_id' => 'lesson_plan_id']],
+            [['lesson_plan_id'], 'unique', 'targetClass' => LessonPlan::className(), 'message' => 'Предмет успешно добавлен'],
         ];
     }
 
@@ -54,6 +55,7 @@ class LessonPlan extends \yii\db\ActiveRecord
         ];
     }
 
+
     /**
      * Gets query for [[Subject]].
      *
@@ -64,11 +66,6 @@ class LessonPlan extends \yii\db\ActiveRecord
         return $this->hasOne(Subject::className(), ['subject_id' => 'subject_id']);
     }
 
-    /**
-     * Gets query for [[Gruppa]].
-     *
-     * @return \yii\db\ActiveQuery|\app\models\queries\GruppaQuery
-     */
     public function getGruppa()
     {
         return $this->hasOne(Gruppa::className(), ['gruppa_id' => 'gruppa_id']);
@@ -81,7 +78,7 @@ class LessonPlan extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Teacher::className(), ['user_id' => 'user_id']);
+        return $this->hasOne(User::className(), ['user_id' => 'user_id']);
     }
 
     /**
@@ -96,10 +93,38 @@ class LessonPlan extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return \app\models\queries\LessonPlanQuery the active query used by this AR class.
+     * @return \app\models\queries\UserQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\queries\LessonPlanQuery(get_called_class());
+        return new \app\models\queries\UserQuery(get_called_class());
+    }
+    
+    public function fields()
+    {
+        $fields = parent::fields();
+        return array_merge($fields, [
+            'lesson_plan_id' => function () { return $this->lesson_plan_id;},
+            'gruppa' => function () { return $this->gruppa->name;},
+            'subject' => function () { return $this->subject->name;},
+            'lastname' => function () { return $this->user->lastname;},
+            'firstname' => function () { return $this->user->firstname;},
+            'patronymic' => function () { return $this->user->patronymic;},
+        ]);
+    }
+
+    public function loadAndSave($bodyParams)
+    {
+        $lessonplan = ($this->isNewRecord) ? new LessonPlan() :
+        LessonPlan::findOne($this->lesson_plan_id);
+        if ($lessonplan->load($bodyParams, '') && $lessonplan->save()) {
+            if ($this->isNewRecord) {
+                $this->lesson_plan_id = $lessonplan->lesson_plan_id;
+            }
+            if ($this->load($bodyParams, '') && $this->save()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

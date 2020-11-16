@@ -31,10 +31,10 @@ class Special extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['otdel_id'], 'required'],
-            [['otdel_id', 'active'], 'integer'],
+            [['special_id'], 'required'],
+            [['special_id', 'active'], 'integer'],
             [['name'], 'string', 'max' => 250],
-            [['otdel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Otdel::className(), 'targetAttribute' => ['otdel_id' => 'otdel_id']],
+            [['special_id'], 'exist', 'skipOnError' => true, 'targetClass' => Special::className(), 'targetAttribute' => ['special_id' => 'special_id']],
         ];
     }
 
@@ -51,30 +51,6 @@ class Special extends \yii\db\ActiveRecord
         ];
     }
 
-    public function fields()
-    {
-        $fields = parent::fields();
-        return array_merge($fields, [
-            'special_id' => function () { return $this->special_id;},
-            'otdelName' => function () { return $this->otdel->name;},
-            'active' => function () { return $this->active;},
-        ]);
-    }
-
-    public function loadAndSave($bodyParams)
-    {
-        $special = ($this->isNewRecord) ? new Special() :
-        Special::findOne($this->special_id);
-        if ($special->load($bodyParams, '') && $special->save()) {
-            if ($this->isNewRecord) {
-                $this->special_id = $special->special_id;
-            }
-            if ($this->load($bodyParams, '') && $this->save()) {
-                return true;
-            }
-        }
-        return false;
-    }
     /**
      * Gets query for [[Gruppas]].
      *
@@ -102,5 +78,30 @@ class Special extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \app\models\queries\UserQuery(get_called_class());
+    }
+    
+    public function fields()
+    {
+        $fields = parent::fields();
+        return array_merge($fields, [
+            'special_id' => function () { return $this->special_id;},
+            'otdelName' => function () { return $this->otdel->name;},
+            'active' => function () { return $this->active;},
+        ]);
+    }
+
+    public function loadAndSave($bodyParams)
+    {
+        $special = ($this->isNewRecord) ? new Special() :
+        Special::findOne($this->special_id);
+        if ($special->load($bodyParams, '') && $special->save()) {
+            if ($this->isNewRecord) {
+                $this->special_id = $special->special_id;
+            }
+            if ($this->load($bodyParams, '') && $this->save()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -5,21 +5,23 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "gender".
+ * This is the model class for table "role".
  *
- * @property int $gender_id
+ * @property int $role_id
+ * @property string $sys_name
  * @property string $name
+ * @property int $active
  *
  * @property User[] $users
  */
-class Gender extends \yii\db\ActiveRecord
+class Role extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'gender';
+        return 'role';
     }
 
     /**
@@ -28,8 +30,8 @@ class Gender extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
-            [['name'], 'string', 'max' => 10],
+            [['active'], 'integer'],
+            [['sys_name', 'name'], 'string', 'max' => 20],
         ];
     }
 
@@ -39,8 +41,10 @@ class Gender extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'gender_id' => 'Gender ID',
+            'role_id' => 'Role ID',
+            'sys_name' => 'Sys Name',
             'name' => 'Name',
+            'active' => 'Active',
         ];
     }
 
@@ -51,14 +55,7 @@ class Gender extends \yii\db\ActiveRecord
      */
     public function getUsers()
     {
-        return $this->hasMany(User::className(), ['gender_id' => 'gender_id']);
-    }
-    public function fields()
-    {
-        $fields = parent::fields();
-        return array_merge($fields, [
-            'gender_id' => function () { return $this->gender_id;},
-        ]);
+        return $this->hasMany(User::className(), ['role_id' => 'role_id']);
     }
 
     /**

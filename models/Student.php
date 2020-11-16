@@ -17,25 +17,20 @@ use Yii;
 class Student extends \yii\db\ActiveRecord
 {
     /**
-     * @var mixed|null
-     */
-    private $student;
-
-    /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
         return 'student';
     }
-
+   
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['user_id', 'gruppa_id', 'num_zach'], 'required'],
+            [['user_id', 'gruppa_id'], 'required'],
             [['user_id', 'gruppa_id'], 'integer'],
             [['num_zach'], 'string', 'max' => 10],
             [['user_id'], 'unique'],
@@ -78,16 +73,16 @@ class Student extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return \app\models\queries\StudentQuery the active query used by this AR class.
+     * @return \app\models\queries\UserQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\queries\StudentQuery(get_called_class());
+        return new \app\models\queries\UserQuery(get_called_class());
     }
-
     public function loadAndSave($bodyParams)
     {
-        $user = ($this->isNewRecord) ? new User() : User::findOne($this->user_id);
+        $user = ($this->isNewRecord) ? new User() :
+        User::findOne($this->user_id);
         if ($user->load($bodyParams, '') && $user->save()) {
             if ($this->isNewRecord) {
                 $this->user_id = $user->user_id;
@@ -95,17 +90,13 @@ class Student extends \yii\db\ActiveRecord
             if ($this->load($bodyParams, '') && $this->save()) {
                 return true;
             }
-}
-
+        }
         return false;
-
     }
-
     public function fields()
     {
         $fields = parent::fields();
-        return array_merge($fields,
-            [
+        return array_merge($fields, [
             'lastname' => function () { return $this->user->lastname;},
             'firstname' => function () { return $this->user->firstname;},
             'patronymic' => function () { return $this->user->patronymic;},
@@ -115,9 +106,8 @@ class Student extends \yii\db\ActiveRecord
             'birthday' => function () { return $this->user->birthday;},
             'roleName' => function () { return $this->user->roleName;},
             'active' => function () { return $this->user->active;},
-            'gruppa_id' => function () { return $this->student->gruppa_id;},
-            'gruppaName' => function () { return $this->student->gruppa->name;},
-            'num_zach' => function () { return $this->student->num_zach;}
+            'gruppaName' => function () { return $this->gruppa->name;},
+            'numZach' => function () { return $this->student->num_zach;},
         ]);
     }
 }

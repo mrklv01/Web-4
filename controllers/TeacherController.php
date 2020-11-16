@@ -1,6 +1,5 @@
 <?php
 
-
 namespace app\controllers;
 
 use yii\data\ActiveDataProvider;
@@ -10,15 +9,12 @@ use yii\helpers\Url;
 use yii\web\ServerErrorHttpException;
 use yii\web\NotFoundHttpException;
 
-
 class TeacherController extends BaseController
 {
 
     public function actionIndex()
     {
-        return new ActiveDataProvider([
-            'query' => Teacher::find()->with('user'),
-        ]);
+        return new ActiveDataProvider(['query' => Teacher::find()->with('user'),]);
     }
 
     public function actionCreate()
@@ -38,6 +34,20 @@ class TeacherController extends BaseController
         return $this->findModel($id);
     }
 
+    public function saveModel($teacher)
+    {
+        if ($teacher->loadAndSave(Yii::$app->getRequest()->getBodyParams())) {
+            $response = Yii::$app->getResponse();
+            $response->setStatusCode(201);
+            $response->getHeaders()->set('Location',
+            Url::toRoute(['view', 'id' => $teacher->getPrimaryKey()], true));
+        } 
+        elseif (!$teacher->hasErrors()) {
+            throw new
+            ServerErrorHttpException(serialize($teacher->getErrors()));
+        }  
+        return $teacher;
+    }
     public function findModel($id)
     {
         $teacher = Teacher::findOne($id);
@@ -46,19 +56,5 @@ class TeacherController extends BaseController
         }
         return $teacher;
     }
-
-    public function saveModel($teacher)
-    {
-        if ($teacher->loadAndSave(Yii::$app->getRequest()->getBodyParams())) {
-        $response = Yii::$app->getResponse();
-        $response->setStatusCode(201);
-        $response->getHeaders()->set('Location', Url::toRoute(['view', 'id' => $teacher->getPrimaryKey()], true));
-        } elseif (!$teacher->hasErrors()) {
-            throw new
-            ServerErrorHttpException(serialize($teacher->getErrors()));
-        }
-        return $teacher;
-
-    }
-
+   
 }

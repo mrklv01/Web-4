@@ -48,7 +48,7 @@ class Teacher extends \yii\db\ActiveRecord
             'otdel_id' => 'Otdel ID',
         ];
     }
-
+    
     /**
      * Gets query for [[LessonPlans]].
      *
@@ -87,10 +87,10 @@ class Teacher extends \yii\db\ActiveRecord
     {
         return new \app\models\queries\UserQuery(get_called_class());
     }
-
     public function loadAndSave($bodyParams)
     {
-        $user = ($this->isNewRecord) ? new User() : User::findOne($this->user_id);
+        $user = ($this->isNewRecord) ? new User() :
+        User::findOne($this->user_id);
         if ($user->load($bodyParams, '') && $user->save()) {
             if ($this->isNewRecord) {
                 $this->user_id = $user->user_id;
@@ -99,7 +99,6 @@ class Teacher extends \yii\db\ActiveRecord
                 return true;
             }
         }
-
         return false;
     }
 
@@ -119,5 +118,4 @@ class Teacher extends \yii\db\ActiveRecord
             'otdelName' => function () { return $this->otdel->name;},
         ]);
     }
-
 }

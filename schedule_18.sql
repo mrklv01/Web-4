@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Сен 28 2020 г., 16:20
+-- Время создания: Окт 27 2020 г., 16:44
 -- Версия сервера: 10.3.22-MariaDB
 -- Версия PHP: 7.1.33
 
@@ -18,86 +18,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- База данных: `schedule13`
+-- База данных: `schedule_18`
 --
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `auth_assignment`
---
-
-CREATE TABLE `auth_assignment` (
-  `item_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `user_id` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Дамп данных таблицы `auth_assignment`
---
-
-INSERT INTO `auth_assignment` (`item_name`, `user_id`, `created_at`) VALUES
-('admin', '1', 1601296468);
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `auth_item`
---
-
-CREATE TABLE `auth_item` (
-  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `type` smallint(6) NOT NULL,
-  `description` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rule_name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `data` blob DEFAULT NULL,
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Дамп данных таблицы `auth_item`
---
-
-INSERT INTO `auth_item` (`name`, `type`, `description`, `rule_name`, `data`, `created_at`, `updated_at`) VALUES
-('admin', 1, 'Администратор', NULL, NULL, 1601296468, 1601296468),
-('adminManager', 2, 'Администрирование\r\n        ресурсов', NULL, NULL, 1601296468, 1601296468),
-('manager', 1, 'Менеджер', NULL, NULL, 1601296468, 1601296468),
-('student', 1, 'Студент', NULL, NULL, 1601296468, 1601296468),
-('teacher', 1, 'Преподаватель', NULL, NULL, 1601296468, 1601296468);
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `auth_item_child`
---
-
-CREATE TABLE `auth_item_child` (
-  `parent` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `child` varchar(64) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Дамп данных таблицы `auth_item_child`
---
-
-INSERT INTO `auth_item_child` (`parent`, `child`) VALUES
-('admin', 'adminManager'),
-('manager', 'adminManager');
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `auth_rule`
---
-
-CREATE TABLE `auth_rule` (
-  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `data` blob DEFAULT NULL,
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -215,28 +137,6 @@ CREATE TABLE `lesson_plan` (
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `migration`
---
-
-CREATE TABLE `migration` (
-  `version` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `apply_time` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Дамп данных таблицы `migration`
---
-
-INSERT INTO `migration` (`version`, `apply_time`) VALUES
-('m000000_000000_base', 1601296227),
-('m140506_102106_rbac_init', 1601296229),
-('m170907_052038_rbac_add_index_on_auth_assignment_user_id', 1601296229),
-('m180523_151638_rbac_updates_indexes_without_prefix', 1601296229),
-('m200409_110543_rbac_update_mssql_trigger', 1601296229);
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `otdel`
 --
 
@@ -254,29 +154,6 @@ INSERT INTO `otdel` (`otdel_id`, `name`, `active`) VALUES
 (1, 'Программирование', 1),
 (2, 'Общеобразовательные дисциплины', 1),
 (3, 'Строительство', 1);
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `role`
---
-
-CREATE TABLE `role` (
-  `role_id` tinyint(4) NOT NULL,
-  `sys_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `active` tinyint(4) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Дамп данных таблицы `role`
---
-
-INSERT INTO `role` (`role_id`, `sys_name`, `name`, `active`) VALUES
-(1, 'admin', 'Администратор', 1),
-(2, 'manager', 'Менеджер', 1),
-(3, 'teacher', 'Преподаватель', 1),
-(4, 'student', 'Студент', 1);
 
 -- --------------------------------------------------------
 
@@ -386,40 +263,11 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `lastname`, `firstname`, `patronymic`, `login`, `pass`, `token`, `expired_at`, `gender_id`, `birthday`, `role_id`, `active`) VALUES
-(1, 'Смит', 'Джон', 'Тимофеевич', 'admin', '$2y$13$u9hGuhVBf9yCSNeLI4gW8OB8FkdDY7Qc28oiuBEeYsmmJNeTs55ca', 'EbDgUqNNU3jufx0qm3dUJMQxpe3oYdE5', 1601385542, 1, '2001-03-15', 1, 1),
-(11, 'Моисеенко', 'Дмитрий', 'Юрьевич', 'uchiha', '$2y$13$u9hGuhVBf9yCSNeLI4gW8OB8FkdDY7Qc28oiuBEeYsmmJNeTs55ca', 'Rvtmh4GGOT8pWWnC2jXtHPAwZTj0Gbne', 1601385554, 1, '2001-03-15', 1, 1);
+(11, 'Прудников', 'Денис', 'Андреевич', 'admin', '$2y$13$u9hGuhVBf9yCSNeLI4gW8OB8FkdDY7Qc28oiuBEeYsmmJNeTs55ca', NULL, NULL, 1, '2020-09-20', NULL, 1);
 
 --
 -- Индексы сохранённых таблиц
 --
-
---
--- Индексы таблицы `auth_assignment`
---
-ALTER TABLE `auth_assignment`
-  ADD PRIMARY KEY (`item_name`,`user_id`),
-  ADD KEY `idx-auth_assignment-user_id` (`user_id`);
-
---
--- Индексы таблицы `auth_item`
---
-ALTER TABLE `auth_item`
-  ADD PRIMARY KEY (`name`),
-  ADD KEY `rule_name` (`rule_name`),
-  ADD KEY `idx-auth_item-type` (`type`);
-
---
--- Индексы таблицы `auth_item_child`
---
-ALTER TABLE `auth_item_child`
-  ADD PRIMARY KEY (`parent`,`child`),
-  ADD KEY `child` (`child`);
-
---
--- Индексы таблицы `auth_rule`
---
-ALTER TABLE `auth_rule`
-  ADD PRIMARY KEY (`name`);
 
 --
 -- Индексы таблицы `classroom`
@@ -462,22 +310,10 @@ ALTER TABLE `lesson_plan`
   ADD KEY `FK_lesson_plan_teacher_user_id` (`user_id`);
 
 --
--- Индексы таблицы `migration`
---
-ALTER TABLE `migration`
-  ADD PRIMARY KEY (`version`);
-
---
 -- Индексы таблицы `otdel`
 --
 ALTER TABLE `otdel`
   ADD PRIMARY KEY (`otdel_id`);
-
---
--- Индексы таблицы `role`
---
-ALTER TABLE `role`
-  ADD PRIMARY KEY (`role_id`);
 
 --
 -- Индексы таблицы `schedule`
@@ -522,8 +358,7 @@ ALTER TABLE `teacher`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`user_id`),
-  ADD KEY `FK_user_gender_gender_id` (`gender_id`),
-  ADD KEY `FK_user_role_role_id` (`role_id`);
+  ADD KEY `FK_user_gender_gender_id` (`gender_id`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
@@ -572,12 +407,6 @@ ALTER TABLE `otdel`
   MODIFY `otdel_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT для таблицы `role`
---
-ALTER TABLE `role`
-  MODIFY `role_id` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
 -- AUTO_INCREMENT для таблицы `schedule`
 --
 ALTER TABLE `schedule`
@@ -604,25 +433,6 @@ ALTER TABLE `user`
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
-
---
--- Ограничения внешнего ключа таблицы `auth_assignment`
---
-ALTER TABLE `auth_assignment`
-  ADD CONSTRAINT `auth_assignment_ibfk_1` FOREIGN KEY (`item_name`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Ограничения внешнего ключа таблицы `auth_item`
---
-ALTER TABLE `auth_item`
-  ADD CONSTRAINT `auth_item_ibfk_1` FOREIGN KEY (`rule_name`) REFERENCES `auth_rule` (`name`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Ограничения внешнего ключа таблицы `auth_item_child`
---
-ALTER TABLE `auth_item_child`
-  ADD CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `auth_item_child_ibfk_2` FOREIGN KEY (`child`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ограничения внешнего ключа таблицы `gruppa`
@@ -672,13 +482,6 @@ ALTER TABLE `subject`
 ALTER TABLE `teacher`
   ADD CONSTRAINT `FK_teacher_otdel_otdel_id` FOREIGN KEY (`otdel_id`) REFERENCES `otdel` (`otdel_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `FK_teacher_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Ограничения внешнего ключа таблицы `user`
---
-ALTER TABLE `user`
-  ADD CONSTRAINT `FK_user_gender_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `gender` (`gender_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `FK_user_role_role_id` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

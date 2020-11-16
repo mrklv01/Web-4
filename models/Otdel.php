@@ -68,6 +68,25 @@ class Otdel extends \yii\db\ActiveRecord
         return $this->hasMany(Subject::className(), ['otdel_id' => 'otdel_id']);
     }
 
+    /**
+     * Gets query for [[Teachers]].
+     *
+     * @return \yii\db\ActiveQuery|\app\models\queries\TeacherQuery
+     */
+    public function getTeachers()
+    {
+        return $this->hasMany(Teacher::className(), ['otdel_id' => 'otdel_id']);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return \app\models\queries\UserQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \app\models\queries\UserQuery(get_called_class());
+    }
+    
     public function fields()
     {
         $fields = parent::fields();
@@ -92,22 +111,4 @@ class Otdel extends \yii\db\ActiveRecord
         return false;
     }
 
-    /**
-     * Gets query for [[Teachers]].
-     *
-     * @return \yii\db\ActiveQuery|\app\models\queries\TeacherQuery
-     */
-    public function getTeachers()
-    {
-        return $this->hasMany(Teacher::className(), ['otdel_id' => 'otdel_id']);
-    }
-
-    /**
-     * {@inheritdoc}
-     * @return \app\models\queries\UserQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new \app\models\queries\UserQuery(get_called_class());
-    }
 }
